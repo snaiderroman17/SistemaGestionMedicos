@@ -1,0 +1,37 @@
+name: Repository Structure Check
+
+on:
+  push:
+    branches:
+      - master
+
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  verify-structure:
+    runs-on: windows-latest
+
+    steps:
+      - name: Descargar código
+        uses: actions/checkout@v4
+
+      - name: Verificar existencia de solución
+        run: |
+          if (!(Get-ChildItem -Filter *.sln)) {
+            Write-Error "No se encontró ningún archivo .sln"
+            exit 1
+          }
+
+      - name: Verificar existencia de proyectos
+        run: |
+          if (!(Get-ChildItem -Recurse -Filter *.csproj)) {
+            Write-Error "No se encontró ningún archivo .csproj"
+            exit 1
+          }
+
+      - name: Mostrar estructura encontrada
+        run: |
+          Get-ChildItem -Recurse -Include *.sln,*.csproj
+        shell: powershell
