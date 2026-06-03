@@ -1,0 +1,37 @@
+name: Repository Structure Check
+
+on:
+  push:
+    branches:
+      - master
+
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  verify-structure:
+    runs-on: windows-latest
+
+    steps:
+      - name: Descargar código
+        uses: actions/checkout@v4
+
+      - name: Verificar solución
+        shell: powershell
+        run: |
+          if (!(Get-ChildItem -Recurse -Include *.sln,*.slnx)) {
+            Write-Error "No se encontró una solución"
+            exit 1
+          }
+
+      - name: Verificar proyecto
+        shell: powershell
+        run: |
+          if (!(Get-ChildItem -Recurse -Filter *.csproj)) {
+            Write-Error "No se encontró un proyecto"
+            exit 1
+          }
+
+      - name: Validación completada
+        run: echo "Estructura del proyecto válida"
