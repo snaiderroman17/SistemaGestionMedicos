@@ -17,21 +17,21 @@ jobs:
       - name: Descargar código
         uses: actions/checkout@v4
 
-      - name: Verificar existencia de solución
+      - name: Verificar solución
+        shell: powershell
         run: |
-          if (!(Get-ChildItem -Filter *.sln)) {
-            Write-Error "No se encontró ningún archivo .sln"
+          if (!(Get-ChildItem -Recurse -Include *.sln,*.slnx)) {
+            Write-Error "No se encontró una solución"
             exit 1
           }
 
-      - name: Verificar existencia de proyectos
+      - name: Verificar proyecto
+        shell: powershell
         run: |
           if (!(Get-ChildItem -Recurse -Filter *.csproj)) {
-            Write-Error "No se encontró ningún archivo .csproj"
+            Write-Error "No se encontró un proyecto"
             exit 1
           }
 
-      - name: Mostrar estructura encontrada
-        run: |
-          Get-ChildItem -Recurse -Include *.sln,*.csproj
-        shell: powershell
+      - name: Validación completada
+        run: echo "Estructura del proyecto válida"
